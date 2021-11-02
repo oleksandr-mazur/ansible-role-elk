@@ -1,0 +1,11 @@
+- name: Install kibana
+  become: yes
+  register: install_kibana
+  apt:
+    update_cache: yes
+    pkg:
+    - kibana
+  notify: make sure kibana running
+
+- name: Ensure kibana is running
+  service: name=kibana.service state=started

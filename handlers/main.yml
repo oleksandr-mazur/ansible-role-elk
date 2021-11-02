@@ -1,0 +1,27 @@
+---
+# handlers file for elk
+
+- name: apply sysctl
+  become: yes
+  shell: sysctl --system
+  
+- name: make sure logstash running
+  systemd:
+    state: started
+    name: logstash.service
+    enabled: yes
+
+- name: make sure kibana running
+  systemd:
+    state: started
+    name: kibana.service
+    enabled: yes
+
+
+- name: make sure elasticsearch running
+  ansible.builtin.service:
+    state: started
+    name: elasticsearch.service
+    enabled: yes
+
+    

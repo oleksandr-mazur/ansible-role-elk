@@ -1,0 +1,11 @@
+- name: Install logstash
+  become: yes
+  register: install_logstash
+  apt:
+    update_cache: yes
+    pkg:
+    - logstash
+  notify: make sure logstash running
+
+- name: Ensure logstash is running
+  service: name=logstash.service state=started

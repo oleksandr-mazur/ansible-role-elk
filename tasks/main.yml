@@ -1,0 +1,27 @@
+---
+# tasks file for elk
+
+- name: Add an Apt signing key to a specific keyring file
+  become: yes
+  apt_key:
+    url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+    state: present
+
+
+- name: Add elasticsearch repository
+  become: yes
+  apt_repository:
+    repo: deb https://artifacts.elastic.co/packages/7.x/apt stable main
+    state: present
+
+- include: elasticsearch.yaml
+  become: yes
+  when: add_elasticsearch
+
+- include: kibana.yaml
+  become: yes
+  when: add_kibana
+
+- include: logstash.yaml
+  become: yes
+  when: add_logstash

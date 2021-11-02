@@ -1,0 +1,16 @@
+
+
+- name: Install elasticsearch
+  become: yes
+  register: install_elasticsearch
+  ansible.builtin.apt:
+    update_cache: yes
+    pkg:
+    - elasticsearch
+  notify: 
+  - make sure elasticsearch running
+
+- name: Ensure elasticsearch is running
+  service: name=elasticsearch.service state=started
+
+
