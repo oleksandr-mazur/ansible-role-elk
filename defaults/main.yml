@@ -1,2 +1,11 @@
 ---
 # defaults file for elk
+
+elasticsearch_host: localhost:9200
+kibana_host: localhost:5601
+elasticsearch_cluster_name: elasticsearch_cluster
+elasticsearch_plugins:
+- repository-s3
+- discovery-ec2
+
+logstash_plugins: []

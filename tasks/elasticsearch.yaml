@@ -4,13 +4,24 @@
   become: yes
   register: install_elasticsearch
   ansible.builtin.apt:
-    update_cache: yes
+    update_cache: no
     pkg:
     - elasticsearch
   notify: 
   - make sure elasticsearch running
 
-- name: Ensure elasticsearch is running
-  service: name=elasticsearch.service state=started
+- name: Install elasticsearch plugins
+  ansible.builtin.shell:
+    cmd: yes | /usr/share/elasticsearch/bin/elasticsearch-plugin install {{ item }} -s
+  with_items: "{{ elasticsearch_plugins }}"
+  when: install_elasticsearch is changed
+  notify: elasticsearch restart
 
+
+- name: Upload elasticsearch config
+  become: yes
+  template:
+    src="templates/elasticsearch/elasticsearch.yml"
+    dest="/etc/elasticsearch/elasticsearch.yml"
+  notify: elasticsearch restart
 

@@ -5,23 +5,60 @@
   become: yes
   shell: sysctl --system
   
+# LogStash handlers
 - name: make sure logstash running
   systemd:
     state: started
     name: logstash.service
     enabled: yes
 
+- name: logstash restart
+  ansible.builtin.systemd:
+    state: restarted
+    name: logstash.service
+
+# Kibana handlers
 - name: make sure kibana running
   systemd:
     state: started
     name: kibana.service
     enabled: yes
 
+- name: kibana restart
+  ansible.builtin.systemd:
+    state: restarted
+    name: kibana.service
 
+# Elasticsearch handlers
 - name: make sure elasticsearch running
-  ansible.builtin.service:
+  ansible.builtin.systemd:
     state: started
     name: elasticsearch.service
     enabled: yes
 
-    
+- name: elasticsearch restart
+  ansible.builtin.systemd:
+    state: restarted
+    name: elasticsearch.service
+
+- name: make sure nginx running
+  ansible.builtin.systemd:
+    state: started
+    name: nginx.service
+    enabled: yes
+
+- name: nginx reload
+  ansible.builtin.systemd:
+    state: reloaded
+    name: nginx.service
+
+- name: make sure filebeat running
+  ansible.builtin.systemd:
+    state: started
+    name: filebeat.service
+    enabled: yes
+
+- name: filebeat restart
+  ansible.builtin.systemd:
+    state: restarted
+    name: filebeat.service

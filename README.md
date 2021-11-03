@@ -1,12 +1,12 @@
-Role Name
+ELK
 =========
 
-A brief description of the role goes here.
+Install elk stack 
 
 Requirements
 ------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+Supported only Ubuntu OS
 
 Role Variables
 --------------
@@ -27,12 +27,20 @@ Including an example of how to use your role (for instance, with variables passe
       roles:
          - { role: username.rolename, x: 42 }
 
+    - name: Install ELK
+      hosts: elk_hosts
+      gather_facts: no
+      roles:
+        - role: elk
+          add_elasticsearch: yes
+          add_kibana: yes
+          add_logstash: yes
+          kibana_dns_name: kibana.foo.org
+          elasticsearch_cluster_name: dev-01
+
+
 License
 -------
 
 BSD
 
-Author Information
-------------------
-
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).

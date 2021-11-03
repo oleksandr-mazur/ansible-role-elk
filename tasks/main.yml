@@ -7,12 +7,19 @@
     url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
     state: present
 
-
 - name: Add elasticsearch repository
   become: yes
   apt_repository:
     repo: deb https://artifacts.elastic.co/packages/7.x/apt stable main
     state: present
+
+
+- name: Update repositories and install htop package
+  apt:
+    name: htop
+    update_cache: yes
+    cache_valid_time: 3600
+  become: yes
 
 - include: elasticsearch.yaml
   become: yes

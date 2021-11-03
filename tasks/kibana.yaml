@@ -2,10 +2,40 @@
   become: yes
   register: install_kibana
   apt:
-    update_cache: yes
+    update_cache: no
     pkg:
     - kibana
-  notify: make sure kibana running
+    - nginx
+    - filebeat
+  notify:
+  - make sure kibana running
+  - make sure nginx running
+  - make sure filebeat running
 
-- name: Ensure kibana is running
-  service: name=kibana.service state=started
+- name: Upload kibana config
+  become: yes
+  template:
+    src="templates/kibana/kibana.yml"
+    dest="/etc/kibana/kibana.yml"
+  notify: kibana restart
+
+- name: Upload nginx kibana config
+  become: yes
+  template:
+    src="templates/nginx/kibana.conf"
+    dest="/etc/nginx/conf.d/kibana.conf"
+  notify: nginx reload
+
+- name: Upload filebeat config
+  become: yes
+  register: filebeat_config
+  template:
+    src="templates/filebeat/filebeat.yml"
+    dest="/etc/filebeat/filebeat.yml"
+  notify: filebeat restart
+
+- name: Enable elasticsearch module for filebeat
+  ansible.builtin.shell:
+    cmd: /usr/bin/filebeat modules enable elasticsearch && filebeat setup
+  when: filebeat_config is changed
+  notify: filebeat restart

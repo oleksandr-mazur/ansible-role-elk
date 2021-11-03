@@ -2,10 +2,29 @@
   become: yes
   register: install_logstash
   apt:
-    update_cache: yes
+    update_cache: no
     pkg:
     - logstash
   notify: make sure logstash running
 
-- name: Ensure logstash is running
-  service: name=logstash.service state=started
+
+- name: Upload logstash pipelines config
+  become: yes
+  template:
+    src="templates/logstash/pipelines.yml"
+    dest="/etc/logstash/pipelines.yml"
+  notify: logstash restart
+
+- name: Upload logstash config
+  become: yes
+  template:
+    src="templates/logstash/logstash.yml"
+    dest="/etc/logstash/logstash.yml"
+  notify: logstash restart
+
+- name: Install logstash plugins
+  ansible.builtin.shell:
+    cmd: yes | /usr/share/logstash/bin/logstash-plugin install {{ item }} -s
+  with_items: "{{ logstash_plugins }}"
+  when: install_logstash is changed
+  notify: logstash restart
